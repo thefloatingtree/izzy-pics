@@ -1,7 +1,9 @@
 import { Button } from "@chakra-ui/button"
-import { Container, VStack } from "@chakra-ui/layout"
+import { Box, Center, Container, Heading, HStack, VStack } from "@chakra-ui/layout"
+import { Spinner } from "@chakra-ui/spinner"
+import { Fade } from "@chakra-ui/transition"
 import axios from "axios"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Gallery from "./Gallery"
 
 async function getAllImages() {
@@ -18,7 +20,7 @@ async function getAllImages() {
 
 function App() {
     const [images, setImages] = useState([])
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
 
     const fetchImages = () => {
         setLoading(true)
@@ -29,14 +31,29 @@ function App() {
             })
     }
 
+    useEffect(() => {
+        fetchImages()
+    }, [])
+
     return (
         <Container maxW="container.xl">
             <VStack align="start" my="6" spacing="15px">
-                <Button isLoading={loading} colorScheme="blue" onClick={() => fetchImages()}>Get Izzy</Button>
-                {!!images.length &&
+                {!loading &&
                     <Gallery images={images} delay={100}></Gallery>
                 }
             </VStack>
+            {loading &&
+                <Fade in={loading}>
+                    <VStack align="center" justify="center" height="100vh">
+                        <HStack align="center">
+                            <VStack spacing="30px">
+                                <Heading textAlign="center" color="blue.500">Loading Izzy from Derpibooru</Heading>
+                                <Spinner color="blue.500" thickness="4px" size="xl"></Spinner>
+                            </VStack>
+                        </HStack>
+                    </VStack>
+                </Fade>
+                }
         </Container>
     )
 }
