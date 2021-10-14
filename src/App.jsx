@@ -6,13 +6,15 @@ import { Loader } from "./Loader"
 
 async function getAllImages() {
     let imageResponses = []
-    let res = await axios.get('https://derpibooru.org/api/v1/json/search/images?q=izzy%20moonbow,%20screencap,%20-animated,%20-edited%20screencap,%20solo,%20safe,%20-korean&per_page=1&page=1')
+    let res = await axios.get('https://derpibooru.org/api/v1/json/search/images?q=izzy%20moonbow,screencap,-edited%20screencap,solo,safe,-korean&per_page=1&page=1')
     for (let i = 0; i < res.data.total; i += 50) {
         const page = i / 50 + 1
-        res = await axios.get('https://derpibooru.org/api/v1/json/search/images?q=izzy%20moonbow,%20screencap,%20-animated,%20-edited%20screencap,%20solo,%20safe,%20-korean&sf=random&per_page=50&page=' + page)
+        res = await axios.get('https://derpibooru.org/api/v1/json/search/images?q=izzy%20moonbow,screencap,-edited%20screencap,solo,safe,-korean&sf=random&per_page=50&page=' + page)
         imageResponses = [...imageResponses, ...res.data.images]
     }
-    return imageResponses
+    return imageResponses.filter((image) => {
+        return image.format !== "webm"
+    })
 }
 
 function App() {

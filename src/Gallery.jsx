@@ -77,7 +77,7 @@ export default function Gallery({ images, delay = 150, numberOfImagesToLoad = 24
             { test: (w) => w >= 992 && w < 1280, columns: 3 },
             { test: (w) => w >= 1280, columns: 4 }
         ].forEach(({ test, columns }) => {
-            if (test(width)) setColumnCount(columns)
+            if (test(width) && columnCount !== columns) setColumnCount(columns)
         })
     }, [width])
 
