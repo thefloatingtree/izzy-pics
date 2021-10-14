@@ -1,14 +1,11 @@
 import { Image } from "@chakra-ui/image";
-import { Box, HStack, VStack } from "@chakra-ui/layout";
-import { useBreakpointValue } from "@chakra-ui/media-query";
+import { HStack, VStack } from "@chakra-ui/layout";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useScrollYPosition } from 'react-use-scroll-position'
+import { useScrolledToBottom } from "./hooks/useScrolledToBottom";
+import { useWindowSize } from "./hooks/useWindowSize";
 
-function useScrolledToBottom(offset = 0) {
-    const scrollY = useScrollYPosition()
-    return Boolean(window.innerHeight + scrollY + offset >= document.body.offsetHeight && document.body.offsetHeight)
-}
+const MotionImage = motion(Image)
 
 // Normalize image height to a width of 100
 const normalizeHeight = (width, height) => {
@@ -24,13 +21,13 @@ const reflowColumns = (images, columnCount, columnHeights) => {
         const normalizedHeight = normalizeHeight(image.width, image.height)
         // Attempt to place the image in each column. Sum the distance between each column and its neighboors, return list of distances
         const potentialColumnDistances = columnHeights.map((height, index) => {
-                const newHeight = height + normalizedHeight
-                const distance = columnHeights.reduce((acc, _height, _index) => {
-                    if (index === _index) return acc
-                    return acc + Math.abs(_height - newHeight)
-                }, newHeight)
-                return distance
-            })
+            const newHeight = height + normalizedHeight
+            const distance = columnHeights.reduce((acc, _height, _index) => {
+                if (index === _index) return acc
+                return acc + Math.abs(_height - newHeight)
+            }, newHeight)
+            return distance
+        })
         // Choose the minimum distance
         const columnIndex = potentialColumnDistances.indexOf(Math.min(...potentialColumnDistances))
         columnOutput[columnIndex].push(image)
@@ -39,20 +36,19 @@ const reflowColumns = (images, columnCount, columnHeights) => {
     return columnOutput
 }
 
-const MotionImage = motion(Image);
-const NumberOfImagesToLoad = 25
-
-export default function Gallery({ images, delay = 150 } = {}) {
+export default function Gallery({ images, delay = 150, numberOfImagesToLoad = 24 } = {}) {
     const [displayedImages, setDisplayedImages] = useState([])
     const [columns, setColumns] = useState([])
+    const [columnCount, setColumnCount] = useState(1)
     const [lastImageIndex, setLastImageIndex] = useState(0)
     const [shouldDelay, setShouldDelay] = useState(true)
 
-    const columnCount = useBreakpointValue({ base: 1, sm: 1, md: 2, lg: 3, xl: 4 })
+    const { width } = useWindowSize()
     const isBottom = useScrolledToBottom(500)
 
+    // Get new section of images to display
     const getNewImages = () => {
-        const temp = images.slice(lastImageIndex, lastImageIndex + NumberOfImagesToLoad)
+        const temp = images.slice(lastImageIndex, lastImageIndex + numberOfImagesToLoad)
         if (temp.length) setLastImageIndex(lastImageIndex + temp.length)
         return temp
     }
@@ -60,8 +56,8 @@ export default function Gallery({ images, delay = 150 } = {}) {
     // Load set of images on component mount
     useEffect(() => {
         setDisplayedImages([...displayedImages, ...getNewImages()])
-    }, [])
-
+    }, [images])
+    
     // Load more images when we scroll to the bottom
     useEffect(() => {
         if (isBottom) {
@@ -73,9 +69,22 @@ export default function Gallery({ images, delay = 150 } = {}) {
         }
     }, [isBottom])
 
+    // Update column count
+    useEffect(() => {
+        [
+            { test: (w) => w < 768, columns: 1 },
+            { test: (w) => w >= 768 && w < 992, columns: 2 },
+            { test: (w) => w >= 992 && w < 1280, columns: 3 },
+            { test: (w) => w >= 1280, columns: 4 }
+        ].forEach(({ test, columns }) => {
+            if (test(width)) setColumnCount(columns)
+        })
+    }, [width])
+
     // Reflow columns when images are added or column count changes
     useEffect(() => {
         if (!columnCount) return
+        console.log("REFLOW")
         // Reflow from scratch
         const columnHeights = new Array(columnCount).fill(0)
         setColumns(reflowColumns(displayedImages, columnCount, columnHeights))
@@ -87,7 +96,7 @@ export default function Gallery({ images, delay = 150 } = {}) {
                 return (
                     <VStack key={columnIndex} width="100%">
                         {column.map((image, imageIndex) => {
-                            const delayIndex = shouldDelay ? ((columnIndex + columnCount * imageIndex) - lastImageIndex + NumberOfImagesToLoad) : 0
+                            const delayIndex = shouldDelay ? ((columnIndex + columnCount * imageIndex) - lastImageIndex + numberOfImagesToLoad) : 0
                             return (
                                 <MotionImage
                                     transition={{ delay: (delay / 1000) * delayIndex }}
@@ -96,7 +105,7 @@ export default function Gallery({ images, delay = 150 } = {}) {
                                     animate="end"
                                     borderRadius="md"
                                     width="100%"
-                                    src={image.representations.medium}
+                                    src={image.representations.small}
                                     key={imageIndex}
                                 ></MotionImage>
                             )
@@ -104,7 +113,6 @@ export default function Gallery({ images, delay = 150 } = {}) {
                     </VStack>
                 )
             })}
-
         </HStack>
     )
 }
