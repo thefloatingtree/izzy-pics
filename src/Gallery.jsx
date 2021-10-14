@@ -73,23 +73,13 @@ export default function Gallery({ images, delay = 150 } = {}) {
         }
     }, [isBottom])
 
-    // Reflow columns when column count changes
+    // Reflow columns when images are added or column count changes
     useEffect(() => {
         if (!columnCount) return
         // Reflow from scratch
         const columnHeights = new Array(columnCount).fill(0)
         setColumns(reflowColumns(displayedImages, columnCount, columnHeights))
-    }, [columnCount])
-
-    // Reflow columns when displayedImages changes
-    useEffect(() => {
-        if (!columnCount || !columns.length) return
-        // Reflow preserving current column heights
-        const columnHeights = columns.map(column => {
-            return column.reduce((acc, image) => acc + normalizeHeight(image.width, image.height), 0)
-        })
-        setColumns(reflowColumns(displayedImages, columnCount, columnHeights))
-    }, [displayedImages])
+    }, [displayedImages, columnCount])
 
     return (
         <HStack align="start">
