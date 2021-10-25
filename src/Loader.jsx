@@ -14,7 +14,7 @@ const izzyQuotes = [
 
 export function Loader() {
     return (
-        <VStack justify="center" height="100vh">
+        <VStack justify="center" height="90vh" overflow="hidden">
             <HStack align="center">
                 <VStack spacing="30px">
                     <Heading size="lg" textAlign="center" color="#DD64A1">{izzyQuotes[Math.floor(Math.random() * izzyQuotes.length)]}</Heading>

@@ -116,7 +116,7 @@ export default function Gallery({ images, delay = 150, numberOfImagesToLoad = 24
                     )
                 })}
             </HStack>
-            {(images.length === displayedImages.length) && <Center py="12">
+            {(images.length === displayedImages.length && images.length !== 0) && <Center py="12">
                 <Text color="blackAlpha.700" fontSize="lg">Ran out of Izzy pics...</Text>
             </Center>}
         </Box>
