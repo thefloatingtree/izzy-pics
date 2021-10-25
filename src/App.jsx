@@ -37,7 +37,7 @@ function App() {
 
     return (
         <Container maxW="container.xl">
-            {images.length &&
+            {(images.length || !loading) &&
                 <HStack mt="6" align="center">
                     <Heading color="#DD64A1">Izzy Pics</Heading>
                     <Spacer></Spacer>

@@ -5,7 +5,7 @@ const izzyQuotes = [
     "A glow-up? Honey, you came to the right cottage...",
     "Now that's what I call a glow-up!",
     "Hi, new friend! My name's Izzy!",
-    "Do Earth ponies also like staring contests?",
+    "Do Earth Ponies also like staring contests?",
     "I will need a box of macaroni, a tube of glue, fourteen gooey bunnies, and three jelly beans. Oh. And glitter. Lots of glitter.",
     "We're all in this together, right?"
 ]
