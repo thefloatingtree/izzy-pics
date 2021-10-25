@@ -1,11 +1,12 @@
 import { Image } from "@chakra-ui/image";
-import { HStack, VStack } from "@chakra-ui/layout";
+import { Box, HStack, VStack } from "@chakra-ui/layout";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { GalleryImage } from "./GalleryImage";
 import { useScrolledToBottom } from "./hooks/useScrolledToBottom";
 import { useWindowSize } from "./hooks/useWindowSize";
 
-const MotionImage = motion(Image)
+const MotionBox = motion(Box)
 
 // Normalize image height to a width of 100
 const normalizeHeight = (width, height) => {
@@ -84,7 +85,6 @@ export default function Gallery({ images, delay = 150, numberOfImagesToLoad = 24
     // Reflow columns when images are added or column count changes
     useEffect(() => {
         if (!columnCount) return
-        console.log("REFLOW")
         // Reflow from scratch
         const columnHeights = new Array(columnCount).fill(0)
         setColumns(reflowColumns(displayedImages, columnCount, columnHeights))
@@ -98,16 +98,17 @@ export default function Gallery({ images, delay = 150, numberOfImagesToLoad = 24
                         {column.map((image, imageIndex) => {
                             const delayIndex = shouldDelay ? ((columnIndex + columnCount * imageIndex) - lastImageIndex + numberOfImagesToLoad) : 0
                             return (
-                                <MotionImage
-                                    transition={{ delay: (delay / 1000) * delayIndex }}
-                                    variants={{ start: { opacity: 0 }, end: { opacity: 1 } }}
-                                    initial="start"
-                                    animate="end"
-                                    borderRadius="md"
-                                    width="100%"
-                                    src={image.representations.small}
-                                    key={imageIndex}
-                                ></MotionImage>
+                                <MotionBox width="100%" key={imageIndex}>
+                                    <GalleryImage
+                                        transition={{ delay: (delay / 1000) * delayIndex }}
+                                        variants={{ start: { opacity: 0 }, end: { opacity: 1 } }}
+                                        initial="start"
+                                        animate="end"
+                                        src={image.representations.small}
+                                        srcLarge={image.representations.medium}
+                                        image={image}
+                                    ></GalleryImage>
+                                </MotionBox>
                             )
                         })}
                     </VStack>

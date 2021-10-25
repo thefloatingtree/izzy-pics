@@ -6,8 +6,8 @@ export function Loader() {
         <VStack justify="center" height="100vh">
             <HStack align="center">
                 <VStack spacing="30px">
-                    <Heading textAlign="center" color="blue.500">Loading Izzy from Derpibooru</Heading>
-                    <Spinner color="blue.500" thickness="4px" size="xl" />
+                    <Heading size="lg" textAlign="center" color="#DD64A1">Loading Izzy from Derpibooru</Heading>
+                    <Spinner color="#DD64A1" thickness="3px" size="lg" />
                 </VStack>
             </HStack>
         </VStack>
