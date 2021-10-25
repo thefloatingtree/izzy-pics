@@ -1,5 +1,5 @@
 import { Image } from "@chakra-ui/image";
-import { Box, HStack, VStack } from "@chakra-ui/layout";
+import { Box, Center, HStack, Text, VStack } from "@chakra-ui/layout";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { GalleryImage } from "./GalleryImage";
@@ -91,29 +91,34 @@ export default function Gallery({ images, delay = 150, numberOfImagesToLoad = 24
     }, [displayedImages, columnCount])
 
     return (
-        <HStack align="start">
-            {columns.map((column, columnIndex) => {
-                return (
-                    <VStack key={columnIndex} width="100%">
-                        {column.map((image, imageIndex) => {
-                            const delayIndex = shouldDelay ? ((columnIndex + columnCount * imageIndex) - lastImageIndex + numberOfImagesToLoad) : 0
-                            return (
-                                <MotionBox width="100%" key={imageIndex}>
-                                    <GalleryImage
-                                        transition={{ delay: (delay / 1000) * delayIndex }}
-                                        variants={{ start: { opacity: 0 }, end: { opacity: 1 } }}
-                                        initial="start"
-                                        animate="end"
-                                        src={image.representations.small}
-                                        srcLarge={image.representations.medium}
-                                        image={image}
-                                    ></GalleryImage>
-                                </MotionBox>
-                            )
-                        })}
-                    </VStack>
-                )
-            })}
-        </HStack>
+        <Box>
+            <HStack align="start">
+                {columns.map((column, columnIndex) => {
+                    return (
+                        <VStack key={columnIndex} width="100%">
+                            {column.map((image, imageIndex) => {
+                                const delayIndex = shouldDelay ? ((columnIndex + columnCount * imageIndex) - lastImageIndex + numberOfImagesToLoad) : 0
+                                return (
+                                    <MotionBox width="100%" key={imageIndex}>
+                                        <GalleryImage
+                                            transition={{ delay: (delay / 1000) * delayIndex }}
+                                            variants={{ start: { opacity: 0 }, end: { opacity: 1 } }}
+                                            initial="start"
+                                            animate="end"
+                                            src={image.representations.small}
+                                            srcLarge={image.representations.medium}
+                                            image={image}
+                                        ></GalleryImage>
+                                    </MotionBox>
+                                )
+                            })}
+                        </VStack>
+                    )
+                })}
+            </HStack>
+            {(images.length === displayedImages.length) && <Center py="12">
+                <Text color="blackAlpha.700" fontSize="lg">Ran out of Izzy pics...</Text>
+            </Center>}
+        </Box>
     )
 }

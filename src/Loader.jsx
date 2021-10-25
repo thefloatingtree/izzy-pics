@@ -7,7 +7,9 @@ const izzyQuotes = [
     "Hi, new friend! My name's Izzy!",
     "Do Earth Ponies also like staring contests?",
     "I will need a box of macaroni, a tube of glue, fourteen gooey bunnies, and three jelly beans. Oh. And glitter. Lots of glitter.",
-    "We're all in this together, right?"
+    "We're all in this together, right?",
+    "I see you!",
+    "I know what you're thinking..."
 ]
 
 export function Loader() {
