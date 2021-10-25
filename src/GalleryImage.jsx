@@ -61,7 +61,7 @@ export function GalleryImage({ src, srcLarge, image } = {}) {
                                     </Link>
                                 </ButtonGroup>
                                 <Spacer></Spacer>
-                                <Button>Close</Button>
+                                <Button onClick={onClose}>Close</Button>
                             </HStack>
                         </Box>
                     </Box>
